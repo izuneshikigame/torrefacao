@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.4" use-changelog="false" last-position="0,0" last-zoom="1" max-obj-count="4"
+<dbmodel pgmodeler-ver="1.0.4" use-changelog="false" last-position="0,0" last-zoom="0.9" max-obj-count="6"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -15,5 +15,191 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
 </schema>
+
+<schema name="registrations" layers="0" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
+<schema name="production" layers="0" rect-visible="true" fill-color="#de5c16">
+	<role name="postgres"/>
+</schema>
+
+<table name="employee" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="registrations"/>
+	<role name="postgres"/>
+	<position x="30" y="92"/>
+	<column name="employees_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="255"/>
+	</column>
+	<column name="function" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="shift">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="employee_pk" type="pk-constr" table="registrations.employee">
+		<columns names="employees_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="equipment" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="registrations"/>
+	<role name="postgres"/>
+	<position x="399.556" y="88.2222"/>
+	<column name="equipment_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="equipment_name" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="type" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="acquisition date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="status">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="equipment_pk" type="pk-constr" table="registrations.equipment">
+		<columns names="equipment_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="suppliers" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="registrations"/>
+	<role name="postgres"/>
+	<position x="180" y="292"/>
+	<column name="suppliers_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="suppliers_name" not-null="true">
+		<type name="varchar" length="255"/>
+	</column>
+	<column name="cnpj" not-null="true">
+		<type name="varchar" length="18"/>
+	</column>
+	<column name="address">
+		<type name="varchar" length="255"/>
+	</column>
+	<column name="contact_number">
+		<type name="varchar" length="11"/>
+	</column>
+	<constraint name="suppliers_pk" type="pk-constr" table="registrations.suppliers">
+		<columns names="suppliers_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="unique_cnpj" type="uq-constr" table="registrations.suppliers">
+		<columns names="cnpj" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="production orders" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="production"/>
+	<role name="postgres"/>
+	<position x="128" y="665"/>
+	<column name="production_orders_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="creation date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="expected_quantity">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="status">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="production orders_pk" type="pk-constr" table="production.&quot;production orders&quot;">
+		<columns names="production_orders_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="production_manager_id" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="employee_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="employee_tem_muitos_production orders" type="rel1n" layers="0"
+	 src-col-pattern="production_manager_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.employee"
+	 dst-table="production.&quot;production orders&quot;"
+	 src-required="true" dst-required="false"/>
+
+<table name="roasting_cycles" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
+	<schema name="production"/>
+	<role name="postgres"/>
+	<position x="647.333" y="658.667"/>
+	<column name="roasting_cycles_id">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="roasting_start_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="roasting_end_date">
+		<type name="date" length="0"/>
+	</column>
+	<column name="starting_weight" not-null="true">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="end_weight">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="percentage loss">
+		<type name="decimal" length="5" precision="2"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="production_order_id" index="1"/>
+		<object name="roaster_id" index="2"/>
+		<object name="roasting_operator_id" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="employee_fk" index="1"/>
+		<object name="equipment_fk" index="0"/>
+		<object name="production orders_fk" index="2"/>
+		<object name="roasting_cycles_uq" index="3"/>
+	</customidxs>
+</table>
+
+<relationship name="equipment_tem_muitos_roasting_cycles" type="rel1n" layers="0"
+	 src-col-pattern="roaster_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.equipment"
+	 dst-table="production.roasting_cycles"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="employee_tem_muitos_roasting_cycles" type="rel1n" layers="0"
+	 src-col-pattern="roasting_operator_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.employee"
+	 dst-table="production.roasting_cycles"
+	 src-required="true" dst-required="false"/>
+
+<relationship name="roasting_cycles_tem_um_production orders" type="rel11" layers="0"
+	 src-col-pattern="production_order_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ffff"
+	 src-table="production.&quot;production orders&quot;"
+	 dst-table="production.roasting_cycles"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
 
 </dbmodel>

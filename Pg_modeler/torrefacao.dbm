@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
  Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="1.0.4" use-changelog="false" last-position="0,0" last-zoom="0.9" max-obj-count="6"
+<dbmodel pgmodeler-ver="1.0.4" use-changelog="false" last-position="0,0" last-zoom="0.9" max-obj-count="13"
 	 default-schema="public" default-owner="postgres"
 	 layers="Default layer"
 	 active-layers="0"
@@ -24,10 +24,22 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </schema>
 
+<schema name="warehouse" layers="0" rect-visible="true" fill-color="#9ce6c7">
+	<role name="postgres"/>
+</schema>
+
+<schema name="Quality" layers="0" rect-visible="true" fill-color="#4523f9">
+	<role name="postgres"/>
+</schema>
+
+<schema name="maintenance" layers="0" rect-visible="true" fill-color="#c279da">
+	<role name="postgres"/>
+</schema>
+
 <table name="employee" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
 	<schema name="registrations"/>
 	<role name="postgres"/>
-	<position x="30" y="92"/>
+	<position x="60" y="540"/>
 	<column name="employees_id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -48,7 +60,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="equipment" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="registrations"/>
 	<role name="postgres"/>
-	<position x="399.556" y="88.2222"/>
+	<position x="420" y="520"/>
 	<column name="equipment_id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -72,7 +84,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="suppliers" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="registrations"/>
 	<role name="postgres"/>
-	<position x="180" y="292"/>
+	<position x="60" y="740"/>
 	<column name="suppliers_id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -99,7 +111,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="production orders" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
 	<schema name="production"/>
 	<role name="postgres"/>
-	<position x="128" y="665"/>
+	<position x="40" y="1020"/>
 	<column name="production_orders_id" not-null="true">
 		<type name="serial" length="0"/>
 	</column>
@@ -137,9 +149,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="roasting_cycles" layers="0" collapse-mode="2" max-obj-count="10" z-value="0">
 	<schema name="production"/>
 	<role name="postgres"/>
-	<position x="647.333" y="658.667"/>
-	<column name="roasting_cycles_id">
-		<type name="smallint" length="0"/>
+	<position x="640" y="1020"/>
+	<column name="roasting_cycles_id" not-null="true">
+		<type name="serial" length="0"/>
 	</column>
 	<column name="roasting_start_date" not-null="true">
 		<type name="date" length="0"/>
@@ -156,6 +168,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="percentage loss">
 		<type name="decimal" length="5" precision="2"/>
 	</column>
+	<constraint name="roasting_cycles_pk" type="pk-constr" table="production.roasting_cycles">
+		<columns names="roasting_cycles_id" ref-type="src-columns"/>
+	</constraint>
 
 	<customidxs object-type="column">
 		<object name="production_order_id" index="1"/>
@@ -201,5 +216,315 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<position x="0" y="0"/>
 	</label>
 </relationship>
+
+<table name="roasting_measurements" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="production"/>
+	<role name="postgres"/>
+	<position x="40" y="1240"/>
+	<column name="measurements_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="roasting_cycle_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="timestamp_measurement" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="temperature_C">
+		<type name="decimal" length="5" precision="2"/>
+	</column>
+	<column name="color">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="notes">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="roasting_measurements_pk" type="pk-constr" table="production.roasting_measurements">
+		<columns names="measurements_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="raw_material_lots" layers="0" collapse-mode="2" max-obj-count="12" z-value="0">
+	<schema name="warehouse"/>
+	<role name="postgres"/>
+	<position x="960" y="520"/>
+	<column name="mp_lot_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="batch_code" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="harvest">
+		<type name="varchar" length="10"/>
+	</column>
+	<column name="geographic_origin">
+		<type name="varchar" length="255"/>
+	</column>
+	<column name="variety">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="process">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="quantity_received_kg" not-null="true">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="arrival_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="status" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<constraint name="unique_code" type="uq-constr" table="warehouse.raw_material_lots">
+		<columns names="batch_code" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="raw_material_lots_pk" type="pk-constr" table="warehouse.raw_material_lots">
+		<columns names="mp_lot_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="supplier_id" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="suppliers_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="suppliers_tem_muitos_Raw_Material_Lots" type="rel1n" layers="0"
+	 src-col-pattern="supplier_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.suppliers"
+	 dst-table="warehouse.raw_material_lots"
+	 src-required="false" dst-required="false">
+	<label ref-type="dst-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<table name="finished_product_batches" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="warehouse"/>
+	<role name="postgres"/>
+	<position x="1380" y="520"/>
+	<column name="batch_pf_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="pf_batch_code">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="manufacturing_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="expiration_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="finished_product_batches_pk" type="pk-constr" table="warehouse.finished_product_batches">
+		<columns names="batch_pf_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="roasting_cycle_id" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="finished_product_batches_uq" index="2"/>
+		<object name="roasting_cycles_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="finished_product_batches_tem_um_roasting_cycles" type="rel11" layers="0"
+	 src-col-pattern="roasting_cycle_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ffff"
+	 src-table="production.roasting_cycles"
+	 dst-table="warehouse.finished_product_batches"
+	 src-required="false" dst-required="false"/>
+
+<table name="individual_packaging" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="warehouse"/>
+	<role name="postgres"/>
+	<position x="1860" y="520"/>
+	<column name="packaging_id" not-null="true">
+		<type name="bigserial" length="0"/>
+	</column>
+	<column name="date_packaging" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="actual_weight_g" not-null="true">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="adjustment_made">
+		<type name="boolean" length="0"/>
+	</column>
+	<constraint name="individual_packaging_pk" type="pk-constr" table="warehouse.individual_packaging">
+		<columns names="packaging_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="batch_pf_id" index="1"/>
+		<object name="operator_id" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="employee_fk" index="2"/>
+		<object name="finished_product_batches_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="finished_product_batches_tem_muitos_individual_packaging" type="rel1n" layers="0"
+	 src-col-pattern="batch_pf_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="warehouse.finished_product_batches"
+	 dst-table="warehouse.individual_packaging"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="employee_tem_muitos_individual_packaging" type="rel1n" layers="0"
+	 src-col-pattern="operator_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.employee"
+	 dst-table="warehouse.individual_packaging"
+	 src-required="false" dst-required="false"/>
+
+<table name="quality_analyses" layers="0" collapse-mode="2" max-obj-count="13" z-value="0">
+	<schema name="&quot;Quality&quot;"/>
+	<role name="postgres"/>
+	<position x="1140" y="1000"/>
+	<column name="analysis_id" not-null="true">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="mp_lot_id">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="batch_pf_id">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="analysis_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="analysis_type">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="humidity">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="percentage_of_defects">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="sensory_note">
+		<type name="decimal" length="10" precision="2"/>
+	</column>
+	<column name="result">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="justification">
+		<type name="text" length="0"/>
+	</column>
+	<constraint name="quality_analyses_pk" type="pk-constr" table="&quot;Quality&quot;.quality_analyses">
+		<columns names="analysis_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="analyst_id" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="employee_fk" index="3"/>
+	</customidxs>
+</table>
+
+<relationship name="employee_tem_muitos_quality_analyses" type="rel1n" layers="0"
+	 src-col-pattern="analyst_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#1ab210"
+	 src-table="registrations.employee"
+	 dst-table="&quot;Quality&quot;.quality_analyses"
+	 src-required="false" dst-required="false"/>
+
+<table name="maintenance" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="maintenance"/>
+	<role name="postgres"/>
+	<position x="80" y="160"/>
+	<column name="maintenance_id">
+		<type name="serial" length="0"/>
+	</column>
+	<column name="maintenance_date" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="type" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+
+	<customidxs object-type="column">
+		<object name="employee_id" index="2"/>
+		<object name="equipment_id" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="employee_fk" index="1"/>
+		<object name="equipment_fk" index="0"/>
+	</customidxs>
+</table>
+
+<relationship name="equipment_tem_muitos_maintenance" type="rel1n" layers="0"
+	 src-col-pattern="equipment_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.equipment"
+	 dst-table="maintenance.maintenance"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="employee_tem_muitos_maintenance" type="rel1n" layers="0"
+	 src-col-pattern="employee_id"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#00ff00"
+	 src-table="registrations.employee"
+	 dst-table="maintenance.maintenance"
+	 src-required="false" dst-required="false"/>
+
+<constraint name="fk_roasting_cycle_product" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="production.roasting_cycles" table="production.roasting_measurements">
+	<columns names="roasting_cycle_id" ref-type="src-columns"/>
+	<columns names="roasting_cycles_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="lot_id_pk" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="warehouse.raw_material_lots" table="&quot;Quality&quot;.quality_analyses">
+	<columns names="mp_lot_id" ref-type="src-columns"/>
+	<columns names="mp_lot_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="pf_id_FK" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="warehouse.finished_product_batches" table="&quot;Quality&quot;.quality_analyses">
+	<columns names="batch_pf_id" ref-type="src-columns"/>
+	<columns names="batch_pf_id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_roasting_measurements_roasting_cycles" type="relfk" layers="0"
+	 custom-color="#00ff00"
+	 src-table="production.roasting_measurements"
+	 dst-table="production.roasting_cycles" reference-fk="fk_roasting_cycle_product"
+	 src-required="false" dst-required="true"/>
+
+<relationship name="rel_quality_analyses_raw_material_lots" type="relfk" layers="0"
+	 custom-color="#00ff00"
+	 src-table="&quot;Quality&quot;.quality_analyses"
+	 dst-table="warehouse.raw_material_lots" reference-fk="lot_id_pk"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_quality_analyses_finished_product_batches" type="relfk" layers="0"
+	 custom-color="#00ff00"
+	 src-table="&quot;Quality&quot;.quality_analyses"
+	 dst-table="warehouse.finished_product_batches" reference-fk="pf_id_FK"
+	 src-required="false" dst-required="false"/>
 
 </dbmodel>
